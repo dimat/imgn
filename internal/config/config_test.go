@@ -7,8 +7,8 @@ import (
 
 func TestDefaultConfig(t *testing.T) {
 	cfg := DefaultConfig()
-	if cfg.Model != "pro" {
-		t.Errorf("default model = %s, want pro", cfg.Model)
+	if cfg.Model != "flash2" {
+		t.Errorf("default model = %s, want flash2", cfg.Model)
 	}
 	if cfg.Aspect != "16:9" {
 		t.Errorf("default aspect = %s, want 16:9", cfg.Aspect)

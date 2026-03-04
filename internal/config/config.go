@@ -37,7 +37,7 @@ func DefaultConfig() Config {
 	return Config{
 		Provider:  "google",
 		Providers: map[string]ProviderConfig{},
-		Model:     "pro",
+		Model:     "flash2",
 		Aspect:    "16:9",
 		Size:      "2k",
 		OutputDir: ".",

@@ -52,9 +52,9 @@ Examples:
 		},
 	}
 
-	cmd.Flags().StringVarP(&f.model, "model", "m", "", "Model to use: pro, flash (default from config)")
+	cmd.Flags().StringVarP(&f.model, "model", "m", "", "Model to use: flash2, pro, flash (default from config)")
 	cmd.Flags().StringVarP(&f.aspect, "aspect", "a", "", "Aspect ratio: 1:1, 16:9, 9:16, 4:3, 3:4")
-	cmd.Flags().StringVar(&f.size, "size", "", "Resolution: 1k, 2k, 4k")
+	cmd.Flags().StringVar(&f.size, "size", "", "Resolution: 512px, 1k, 2k, 4k")
 	cmd.Flags().StringVarP(&f.outputFile, "output", "o", "", "Output filename")
 	cmd.Flags().StringVar(&f.outputDir, "output-dir", "", "Output directory")
 	cmd.Flags().IntVarP(&f.count, "count", "n", 1, "Number of images to generate")
@@ -101,7 +101,7 @@ func runGenerate(ctx context.Context, f *generateFlags, args []string) error {
 	if f.aspect != "" {
 		aspect = f.aspect
 	}
-	if err := models.ValidateAspect(aspect); err != nil {
+	if err := models.ValidateAspect(aspect, model); err != nil {
 		if f.jsonOutput {
 			output.PrintJSONError(err.Error())
 			return err
@@ -171,8 +171,11 @@ func runGenerate(ctx context.Context, f *generateFlags, args []string) error {
 		fmt.Fprintf(os.Stderr, "Generating with %s (%s, %s)...\n", model.Alias, aspect, size)
 	}
 
-	// Map size to API format
-	apiSize := strings.ToUpper(size)
+	// Map size to API format (512px passes through as-is, others uppercase)
+	apiSize := size
+	if size != "512px" {
+		apiSize = strings.ToUpper(size)
+	}
 
 	// Generate images (one call per image since API returns 1 image per call)
 	c := client.New(cfg.APIKey())
